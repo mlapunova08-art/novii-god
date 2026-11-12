@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Новогодний стол</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Yeseva+One&display=swap" rel="stylesheet">
+<style>
+/* Концепция: тёплая новогодняя ночь. Гирлянда над шапкой, ёлка у заголовка, снег на фоне,
+   панель продуктов, липкая навигация по четырём разделам, карточки блюд, итоговое меню со списком покупок. */
+:root{
+  --bg:#edf3f0; --surface:#ffffff; --ink:#13302a; --muted:#566d65; --line:#cddbd5; --ice:#dfece7;
+  --spruce:#1c5a44; --spruce-soft:#d3eadf; --berry:#b02a41; --berry-soft:#f6dfe3; --on-berry:#ffffff;
+  --gold:#a97a14; --flake:#9dbfb3; --wire:#6f8f83;
+  --b1:#e0a82e; --b2:#d8344f; --b3:#2f9a6f; --b4:#4a8fd4;
+  --f-display:'Yeseva One','Georgia',serif;
+  --f-body:'Nunito','Segoe UI',system-ui,-apple-system,sans-serif;
+  --ring:#a97a14;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1d18; --surface:#13302a; --ink:#e8f2ee; --muted:#9bb4a9; --line:#26483e; --ice:#1a3b33;
+    --spruce:#6cc9a0; --spruce-soft:#1f4a3b; --berry:#f27b90; --berry-soft:#4a2530; --on-berry:#2a0c14;
+    --gold:#e8bf5e; --flake:#ffffff; --wire:#4d7366;
+    --b1:#f2c14e; --b2:#f2566f; --b3:#4fc795; --b4:#6aa9ec; --ring:#e8bf5e;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1d18; --surface:#13302a; --ink:#e8f2ee; --muted:#9bb4a9; --line:#26483e; --ice:#1a3b33;
+  --spruce:#6cc9a0; --spruce-soft:#1f4a3b; --berry:#f27b90; --berry-soft:#4a2530; --on-berry:#2a0c14;
+  --gold:#e8bf5e; --flake:#ffffff; --wire:#4d7366;
+  --b1:#f2c14e; --b2:#f2566f; --b3:#4fc795; --b4:#6aa9ec; --ring:#e8bf5e;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:400 16px/1.55 var(--f-body);
+  padding-block:0 72px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.wrap{max-width:1120px;margin:0 auto;position:relative;z-index:1}
+#snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0}
+a{color:var(--spruce)}
+
+/* Гирлянда */
+.garland{display:flex;height:40px;overflow:hidden;padding-top:6px}
+.gcell{flex:0 0 64px;height:34px;position:relative;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='22'%3E%3Cpath d='M0 3Q32 22 64 3' fill='none' stroke='%236f8f83' stroke-width='1.5'/%3E%3C/svg%3E") center top/64px 22px no-repeat}
+.gcell i{position:absolute;left:50%;top:11px;width:10px;height:15px;margin-left:-5px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;
+  background:var(--c);box-shadow:0 0 9px 2px var(--c);animation:tw 2.8s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes tw{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Шапка */
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding-block:20px 24px}
+.hero-text{min-width:0}
+.eyebrow{margin:0 0 8px;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--berry)}
+h1{font-size:clamp(38px,8vw,68px);line-height:1.02}
+.lead{margin:14px 0 0;max-width:52ch;color:var(--muted);font-size:17px}
+.tree{width:clamp(72px,16vw,120px);height:auto;flex:none}
+
+/* Панель продуктов */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.panel h2{font-size:26px}
+.count{font-size:14px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.sub{margin:0;font-size:14px;color:var(--muted)}
+.chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.chips:focus{outline:none}
+.chip{display:inline-flex;align-items:center;gap:2px;background:var(--spruce-soft);color:var(--spruce);border-radius:999px;padding:3px 4px 3px 14px;font-weight:700;font-size:15px;min-width:0;max-width:100%}
+.chip span{overflow-wrap:anywhere}
+.chip button{all:unset;cursor:pointer;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:20px;line-height:1;flex:none}
+.chip button:hover{background:color-mix(in srgb,var(--spruce) 18%,transparent)}
+.chip button:focus-visible{outline:3px solid var(--ring)}
+.chips.small .addchip{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border:1.5px dashed var(--muted);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:700;min-height:36px}
+.chips.small .addchip:hover{border-color:var(--berry);color:var(--berry)}
+.chips.small .addchip:focus-visible{outline:3px solid var(--ring)}
+.chips.small .addchip small{font-weight:600;color:var(--muted);font-size:12px}
+.add{display:flex;gap:8px;flex-wrap:wrap}
+.add input{flex:1 1 220px;min-width:0;font:inherit;padding:10px 14px;min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+.add input::placeholder{color:var(--muted)}
+.btn{font:inherit;font-weight:800;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 16px;border-radius:10px;cursor:pointer;min-height:44px}
+.btn:hover{border-color:var(--spruce)}
+.btn.primary{background:var(--berry);color:var(--on-berry);border-color:var(--berry)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.link{all:unset;cursor:pointer;color:var(--muted);font-size:14px;text-decoration:underline;justify-self:start}
+.link:hover{color:var(--berry)}
+.link:focus-visible{outline:3px solid var(--ring)}
+
+/* Навигация и фильтр */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-top:22px;border-bottom:1px solid var(--line)}
+.tabs{list-style:none;margin:0;padding:8px 0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;color:var(--ink);font-weight:800;padding:8px 14px;border-radius:999px;border:1.5px solid transparent;min-height:40px}
+.tabs a:hover{border-color:var(--spruce);color:var(--spruce)}
+.tabs b{background:var(--berry);color:var(--on-berry);border-radius:999px;min-width:22px;padding:0 6px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0 4px}
+.filters .lab{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.seg{font:inherit;font-weight:700;font-size:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 14px;border-radius:999px;cursor:pointer;min-height:38px}
+.seg[aria-pressed="true"]{background:var(--spruce);border-color:var(--spruce);color:var(--surface)}
+
+/* Разделы и карточки */
+.sec{padding-top:30px;scroll-margin-top:64px}
+.sec-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 14px;margin-bottom:16px}
+.sec-head h2{font-size:clamp(28px,5vw,38px)}
+.sec-sub{margin:0;color:var(--muted);font-size:15px}
+.sec-head .count{margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
+.empty{margin:0;padding:18px;border:1.5px dashed var(--line);border-radius:12px;color:var(--muted)}
+.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}
+.card.on{border-color:var(--berry);box-shadow:0 0 0 1.5px var(--berry)}
+.art{position:relative;background:var(--ice);display:grid;place-items:center;padding:14px 10px 6px}
+.art svg{width:min(80%,250px);height:auto;max-width:100%}
+.badge{position:absolute;left:12px;top:12px;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;letter-spacing:.02em}
+.badge.ok{background:var(--spruce-soft);color:var(--spruce)}
+.badge.no{background:var(--berry-soft);color:var(--berry)}
+.body{padding:14px 16px 8px;flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card h3{font-size:21px;line-height:1.2}
+.meta{margin:0;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.need{margin:0;font-size:14px;font-weight:700;color:var(--berry)}
+.ings{list-style:none;margin:0;padding:0;display:grid;gap:3px;font-size:14.5px}
+.ings li{display:flex;align-items:baseline;gap:8px;min-width:0}
+.ings .mark{flex:none;width:10px;height:10px;border-radius:50%;transform:translateY(1px)}
+.ings .nm{min-width:0;overflow-wrap:anywhere}
+.ings .am{margin-left:auto;padding-left:8px;color:var(--muted);font-size:13px;text-align:right;flex:none;max-width:45%}
+.ings .have .mark{background:var(--spruce)}
+.ings .miss .mark{border:2px solid var(--berry)}
+.ings .miss .nm{color:var(--berry);font-weight:700}
+.ings .staple .mark{width:8px;height:2px;border-radius:1px;background:var(--muted);margin-inline:1px;transform:translateY(-3px)}
+.ings .staple .nm{color:var(--muted)}
+.note{margin:0;font-size:13.5px;color:var(--muted);border-left:3px solid var(--gold);padding-left:10px}
+.how{border-top:1px solid var(--line);margin-top:auto;padding-top:8px}
+.how summary{cursor:pointer;font-weight:800;color:var(--spruce);padding:6px 0;min-height:36px}
+.how ol{margin:6px 0 10px;padding-left:20px;display:grid;gap:6px;font-size:14.5px}
+.how .src{display:inline-block;margin:2px 0 8px;font-size:14px;font-weight:700}
+.foot{padding:8px 16px 16px}
+.pick{width:100%;font:inherit;font-weight:800;padding:10px 14px;min-height:44px;border-radius:10px;cursor:pointer;border:1.5px solid var(--berry);background:transparent;color:var(--berry)}
+.pick:hover{background:var(--berry-soft)}
+.pick[aria-pressed="true"]{background:var(--berry);color:var(--on-berry)}
+
+/* Моё меню */
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
+.menu-col{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0;display:grid;gap:12px;align-content:start}
+.menu-col h3{font-size:22px}
+.menu-col h4{margin:6px 0 2px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.menu-col ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.menu-col li{display:flex;gap:10px;align-items:baseline;justify-content:space-between;min-width:0}
+.menu-col li .t{min-width:0;overflow-wrap:anywhere}
+.menu-col li .a{color:var(--muted);font-size:13.5px;text-align:right}
+.x{all:unset;cursor:pointer;color:var(--muted);font-size:13px;text-decoration:underline;flex:none}
+.x:hover{color:var(--berry)}
+.x:focus-visible{outline:3px solid var(--ring)}
+.hint{margin:0;color:var(--muted);font-size:14.5px}
+#copyText{width:100%;font:inherit;font-size:14px;padding:10px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);resize:vertical}
+.foot-note{margin-top:40px;font-size:13.5px;color:var(--muted);display:grid;gap:6px}
+.foot-note p{margin:0;max-width:75ch}
+
+@media (max-width:520px){
+  .hero{align-items:flex-end}
+  .panel{padding:16px}
+  .sec-head .count{margin-left:0}
+}
+@media (prefers-reduced-motion: reduce){
+  .gcell i{animation:none}
+  html{scroll-behavior:auto}
+}
+
+/* Рисунки блюд */
+.st{stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.fn{fill:none}.f1{fill:var(--b3)}.f2{fill:var(--b2)}.f3{fill:var(--b1)}.fp{fill:var(--surface)}.fi{fill:var(--ink)}
+</style>
+<style>[hidden]{display:none!important}html{color-scheme:light}img{max-width:100%}</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+  <symbol id="i-fish" viewBox="0 0 120 90">
+    <ellipse cx="60" cy="68" rx="52" ry="14" class="fp st"/>
+    <path d="M18 48 C32 28 66 26 88 44 L106 32 C102 42 102 50 106 60 L88 50 C66 68 32 66 18 48Z" class="f2 st"/>
+    <circle cx="33" cy="46" r="2.4" class="fi"/>
+    <path d="M50 36 C54 44 54 52 50 60" class="fn st" stroke-width="1.5"/>
+    <path d="M62 34 C66 42 66 50 62 58" class="fn st" stroke-width="1.5"/>
+    <circle cx="96" cy="70" r="9" class="f3 st"/>
+    <path d="M96 62V78M88 70H104" class="fn st" stroke-width="1.2"/>
+  </symbol>
+  <symbol id="i-mushroom" viewBox="0 0 120 90">
+    <ellipse cx="60" cy="70" rx="52" ry="13" class="fp st"/>
+    <path d="M36 52 H50 V68 H36Z" class="fp st"/>
+    <path d="M22 52 C22 26 64 26 64 52Z" class="f3 st"/>
+    <circle cx="36" cy="42" r="2.6" class="f2"/><circle cx="48" cy="38" r="2.6" class="f2"/><circle cx="52" cy="46" r="2.6" class="f2"/>
+    <path d="M80 58 H92 V70 H80Z" class="fp st"/>
+    <path d="M70 58 C70 40 102 40 102 58Z" class="f3 st"/>
+    <circle cx="82" cy="50" r="2.4" class="f2"/><circle cx="92" cy="52" r="2.4" class="f2"/>
+    <ellipse cx="100" cy="72" rx="7" ry="3" class="f1 st" transform="rotate(-12 100 72)"/>
+  </symbol>
+  <symbol id="i-drumstick" viewBox="0 0 120 90">
+    <ellipse cx="60" cy="70" rx="52" ry="13" class="fp st"/>
+    <g transform="rotate(-18 60 46)">
+      <rect x="74" y="38" width="22" height="9" rx="4.5" class="fp st"/>
+      <circle cx="98" cy="38" r="5" class="fp st"/><circle cx="98" cy="48" r="5" class="fp st"/>
+      <ellipse cx="50" cy="43" rx="28" ry="19" class="f3 st"/>
+      <path d="M32 34 C38 28 48 26 58 28" class="fn st" stroke-width="1.6"/>
+      <circle cx="46" cy="46" r="2.4" class="f2"/><circle cx="58" cy="40" r="2.4" class="f2"/><circle cx="40" cy="52" r="2.4" class="f2"/>
+    </g>
+  </symbol>
+  <symbol id="i-roast" viewBox="0 0 120 90">
+    <ellipse cx="60" cy="70" rx="52" ry="13" class="fp st"/>
+    <ellipse cx="38" cy="34" rx="7" ry="3" class="f1 st" transform="rotate(-20 38 34)"/>
+    <ellipse cx="56" cy="30" rx="7" ry="3" class="f1 st" transform="rotate(10 56 30)"/>
+    <rect x="22" y="36" width="76" height="30" rx="15" class="f2 st"/>
+    <ellipse cx="98" cy="51" rx="6" ry="15" class="f2 st"/>
+    <path d="M98 43 q4 4 0 8 q-3 3 -1 5" class="fn st" stroke-width="1.4"/>
+    <path d="M42 36V66M62 36V66M80 36V66" class="fn st" stroke-width="1.6" stroke-dasharray="3 3"/>
+    <circle cx="78" cy="32" r="5" class="fp st"/>
+  </symbol>
+  <symbol id="i-soup" viewBox="0 0 120 90">
+    <path d="M44 32 q-6 -8 0 -14 M60 32 q-6 -8 0 -14 M76 32 q-6 -8 0 -14" class="fn st" stroke-width="2" opacity=".6"/>
+    <path d="M14 46 H106 C106 72 86 84 60 84 C34 84 14 72 14 46Z" class="fp st"/>
+    <ellipse cx="60" cy="46" rx="46" ry="9" class="f3 st"/>
+    <circle cx="40" cy="46" r="3" class="f2"/><circle cx="78" cy="47" r="3" class="f1"/><circle cx="90" cy="45" r="2.4" class="f2"/>
+    <path d="M52 45 q6 -7 14 0" class="fn st" stroke-width="1.6"/>
+  </symbol>
+  <symbol id="i-potato" viewBox="0 0 120 90">
+    <ellipse cx="60" cy="70" rx="52" ry="13" class="fp st"/>
+    <ellipse cx="60" cy="38" rx="17" ry="11" class="f3 st" transform="rotate(-5 60 38)"/>
+    <ellipse cx="40" cy="54" rx="20" ry="13" class="f3 st" transform="rotate(-15 40 54)"/>
+    <ellipse cx="80" cy="52" rx="18" ry="12" class="f3 st" transform="rotate(20 80 52)"/>
+    <circle cx="36" cy="52" r="1.6" class="fi"/><circle cx="46" cy="58" r="1.6" class="fi"/><circle cx="84" cy="50" r="1.6" class="fi"/><circle cx="58" cy="36" r="1.6" class="fi"/>
+    <ellipse cx="60" cy="56" rx="8" ry="3" class="f1 st"/>
+    <ellipse cx="96" cy="68" rx="4" ry="6" class="fp st"/>
+  </symbol>
+  <symbol id="i-salad" viewBox="0 0 120 90">
+    <path d="M60 30 q4 -10 12 -8" class="fn st"/>
+    <rect x="30" y="36" width="10" height="10" rx="2" class="f3 st"/><rect x="44" y="30" width="10" height="10" rx="2" class="f2 st"/>
+    <circle cx="64" cy="36" r="6" class="f1 st"/><rect x="72" y="30" width="10" height="10" rx="2" class="f3 st"/><rect x="84" y="38" width="10" height="10" rx="2" class="f2 st"/>
+    <path d="M16 48 H104 C104 72 84 84 60 84 C36 84 16 72 16 48Z" class="fp st"/>
+    <ellipse cx="60" cy="48" rx="44" ry="9" class="fp st"/>
+    <circle cx="44" cy="48" r="3" class="f1"/><circle cx="62" cy="49" r="3" class="f3"/><circle cx="80" cy="48" r="3" class="f2"/>
+  </symbol>
+  <symbol id="i-tartlet" viewBox="0 0 120 90">
+    <ellipse cx="60" cy="70" rx="52" ry="13" class="fp st"/>
+    <path d="M20 64 L27 46 H51 L58 64Z" class="f3 st"/>
+    <ellipse cx="39" cy="44" rx="14" ry="7" class="fp st"/>
+    <path d="M30 42 q9 -10 18 0" class="f2 st"/>
+    <path d="M64 64 L71 46 H95 L102 64Z" class="f3 st"/>
+    <ellipse cx="83" cy="44" rx="14" ry="7" class="fp st"/>
+    <path d="M74 42 q9 -10 18 0" class="f2 st"/>
+    <ellipse cx="60" cy="58" rx="6" ry="2.6" class="f1 st"/>
+  </symbol>
+  <symbol id="i-glass" viewBox="0 0 120 90">
+    <ellipse cx="60" cy="80" rx="26" ry="6" class="fp st"/>
+    <path d="M44 32 C46 18 58 16 60 28 C62 16 74 18 76 32Z" class="f3 st"/>
+    <ellipse cx="60" cy="14" rx="6" ry="3" class="f1 st"/>
+    <path d="M30 32 H90 C90 54 76 66 66 68 V76 H54 V68 C44 66 30 54 30 32Z" class="fp st"/>
+    <path d="M36 42 H84 C82 52 74 60 60 63 C46 60 38 52 36 42Z" class="f3"/>
+    <path d="M32 40 H88" class="fn st" stroke-width="1.5"/>
+  </symbol>
+  <symbol id="i-fruit" viewBox="0 0 120 90">
+    <circle cx="42" cy="36" r="11" class="f2 st"/>
+    <path d="M42 25 q2 -8 8 -9" class="fn st"/>
+    <path d="M56 38 C68 20 92 26 94 40 C84 34 70 34 62 46Z" class="f3 st"/>
+    <circle cx="80" cy="44" r="8" class="f1 st"/><circle cx="80" cy="44" r="3" class="fp"/>
+    <path d="M16 48 H104 C104 72 84 84 60 84 C36 84 16 72 16 48Z" class="fp st"/>
+    <ellipse cx="60" cy="48" rx="44" ry="9" class="fp st"/>
+    <circle cx="46" cy="50" r="4" class="f2"/><circle cx="66" cy="51" r="4" class="f3"/><circle cx="84" cy="49" r="4" class="f1"/>
+  </symbol>
+</defs>
+</svg>
+
+<canvas id="snow" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <div class="garland" id="garland" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="hero-text">
+      <p class="eyebrow" id="countdown"></p>
+      <h1>Новогодний стол</h1>
+      <p class="lead">Меню из продуктов, которые есть у вас дома. Добавляйте и убирайте продукты, и блюда подстроятся.</p>
+    </div>
+    <svg class="tree" viewBox="0 0 120 150" role="img" aria-label="Ёлка">
+      <polygon points="60,6 66,22 83,22 69,32 75,48 60,38 45,48 51,32 37,22 54,22" fill="var(--b1)"/>
+      <polygon points="60,30 92,78 28,78" fill="var(--spruce)"/>
+      <polygon points="60,54 102,110 18,110" fill="var(--spruce)"/>
+      <polygon points="60,82 112,138 8,138" fill="var(--spruce)"/>
+      <rect x="53" y="138" width="14" height="10" fill="var(--muted)"/>
+      <circle cx="56" cy="62" r="4" fill="var(--b2)"/><circle cx="68" cy="72" r="3.6" fill="var(--b1)"/>
+      <circle cx="40" cy="96" r="4.4" fill="var(--b4)"/><circle cx="62" cy="100" r="4" fill="var(--b2)"/><circle cx="82" cy="94" r="3.8" fill="var(--b1)"/>
+      <circle cx="30" cy="126" r="4.6" fill="var(--b1)"/><circle cx="54" cy="120" r="4.2" fill="var(--b4)"/><circle cx="78" cy="124" r="4.6" fill="var(--b2)"/><circle cx="96" cy="128" r="3.8" fill="var(--b4)"/>
+    </svg>
+  </header>
+
+  <section class="panel" aria-labelledby="h-products">
+    <div class="panel-head">
+      <h2 id="h-products">Мои продукты</h2>
+      <span class="count" id="prodCount"></span>
+    </div>
+    <ul class="chips" id="chips" tabindex="-1"></ul>
+    <form class="add" id="addForm" autocomplete="off">
+      <label class="sr" for="newProduct">Добавить продукт</label>
+      <input id="newProduct" type="text" maxlength="40" placeholder="Например: яйца, сыр, сливки" enterkeyhint="done">
+      <button class="btn primary" type="submit">Добавить</button>
+    </form>
+    <div id="suggestBox">
+      <p class="sub" style="margin-bottom:8px">Эти продукты нужны блюдам ниже. Нажмите, если они есть дома:</p>
+      <ul class="chips small" id="suggest"></ul>
+    </div>
+    <button type="button" class="link" id="resetProducts">Вернуть исходный список</button>
+  </section>
+
+  <nav class="bar" aria-label="Разделы меню">
+    <ul class="tabs">
+      <li><a href="#zakuski">Закуски</a></li>
+      <li><a href="#pervoe">Первое</a></li>
+      <li><a href="#vtoroe">Второе</a></li>
+      <li><a href="#desert">Десерты</a></li>
+      <li><a href="#menu">Моё меню <b id="menuCount">0</b></a></li>
+    </ul>
+  </nav>
+
+  <div class="filters" role="group" aria-label="Какие блюда показывать">
+    <span class="lab">Показывать</span>
+    <button type="button" class="seg" data-f="all" aria-pressed="true">Все блюда</button>
+    <button type="button" class="seg" data-f="near" aria-pressed="false">Не хватает до 2 продуктов</button>
+    <button type="button" class="seg" data-f="full" aria-pressed="false">Всё есть</button>
+  </div>
+
+  <main id="sections"></main>
+
+  <section class="sec" id="menu" aria-labelledby="h-menu">
+    <header class="sec-head">
+      <h2 id="h-menu">Моё меню</h2>
+      <p class="sec-sub">Выбранные блюда и список покупок</p>
+    </header>
+    <div class="menu-grid">
+      <div class="menu-col">
+        <h3>Блюда</h3>
+        <div id="menuList"></div>
+      </div>
+      <div class="menu-col">
+        <h3>Что докупить</h3>
+        <div id="shopList"></div>
+        <button type="button" class="btn" id="copyShop" disabled>Скопировать список</button>
+        <div id="copyFallback" hidden>
+          <p class="hint" style="margin-bottom:6px">Выделите текст и скопируйте его:</p>
+          <textarea id="copyText" readonly rows="7"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot-note">
+    <p>Рецепты пересказаны по материалам lifehacker.ru, nur.kz и vkusvill.ru. Фотографии и полные тексты смотрите по ссылкам «Оригинал и фото» в каждой карточке.</p>
+    <p>Соль, перец, масло, сахар, специи и вода считаются домашними запасами и в список покупок не попадают.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Данные ---------- */
+var DEFAULTS=['конина','форель','курица','креветки','грибы','зелёный горошек','маринованная кукуруза','зелень','картофель','фрукты','напитки'];
+var PK='ny-table-products-v1', MK='ny-table-picked-v1';
+
+var SECTIONS=[
+  {id:'zakuski',t:'Закуски',s:'Холодные закуски и салаты'},
+  {id:'pervoe',t:'Первое',s:'Супы'},
+  {id:'vtoroe',t:'Второе',s:'Горячее и гарниры'},
+  {id:'desert',t:'Десерты',s:'Сладкое к концу стола'}
+];
+
+/* I(название, количество, основы для поиска через |, ключ для списка, домашний запас) */
+function I(n,a,m,k,s){return {n:n,a:a,m:m?m.split('|'):[],k:k,s:!!s};}
+var SALT=I('Соль, чёрный перец','по вкусу',0,'соль и перец',1);
+
+var RECIPES=[
+{id:'z1',cat:'zakuski',s:'Форель слабой соли',title:'Слабосолёная форель',art:'fish',time:'1 сутки (5 минут работы)',serv:'8 порций',
+ src:{n:'lifehacker.ru',u:'https://lifehacker.ru/recipe/slabosolyonaya-forel/'},
+ ings:[I('Филе форели','500–600 г','форел','форель'),I('Соль','3 ч. л.',0,'соль',1),I('Сахар','2 ч. л.',0,'сахар',1),I('Водка','40 мл','водк','водка')],
+ steps:['Очистите филе от чешуи и костей, ополосните и хорошо просушите бумажными полотенцами.','Смешайте соль с сахаром, натрите рыбу смесью, сбрызните водкой и слегка разотрите.','Переложите в миску, накройте плёнкой и уберите в холодильник на сутки.','Перед подачей ополосните под проточной водой и нарежьте тонкими ломтиками.']},
+
+{id:'z2',cat:'zakuski',s:'Шампиньоны',title:'Шампиньоны, фаршированные курицей и сыром',art:'mushroom',time:'40 минут',serv:'5 порций',
+ src:{n:'lifehacker.ru',u:'https://lifehacker.ru/recipe/shampinony-farshirovannye-kuricej-i-syrom/'},
+ ings:[I('Крупные шампиньоны','10 шт.','гриб|шампин','грибы'),I('Куриное филе','300 г','кури','курица'),I('Репчатый лук','1 шт.','лук','лук'),I('Твёрдый сыр','100 г','сыр','сыр'),I('Подсолнечное и оливковое масло','3 ст. л.',0,'масло',1),SALT],
+ steps:['Помойте грибы и отделите ножки. Филе мелко нарежьте и обжарьте на подсолнечном масле около 5 минут.','Добавьте мелко нарубленные ножки, посолите, поперчите и жарьте, пока не выпарится выделившийся сок.','Добавьте мелко нарезанный лук и готовьте ещё 3–4 минуты.','Наполните шляпки начинкой, выложите на противень, смазанный оливковым маслом, и посыпьте тёртым сыром.','Запекайте при 180 °C 10–15 минут и подавайте горячими.']},
+
+{id:'z3',cat:'zakuski',s:'Тарталетки',title:'Тарталетки с креветками и сливочным сыром',art:'tartlet',time:'25 минут',serv:'12 тарталеток',
+ src:{n:'lifehacker.ru',u:'https://lifehacker.ru/recipe/tartaletki-s-krevetkami-i-slivochnym-syrom/'},
+ ings:[I('Очищенные креветки','300 г','кревет','креветки'),I('Дрожжевое слоёное тесто','500 г','тест','слоёное тесто'),I('Помидоры черри','200 г','черри','черри'),I('Сливочный сыр','150 г','сливочный сыр','сливочный сыр'),I('Зелень: зелёный лук, петрушка, тимьян','по вкусу','зелень|укроп|петруш|тимьян|зеленый лук','зелень')],
+ steps:['Заранее отварите креветки.','Раскатайте тесто, вырежьте круги диаметром около 6 см и выложите их на противень с пергаментом.','Нарежьте черри кубиками, смешайте с рубленой зеленью, выложите в центр каждого круга и подогните края теста.','Сверху положите сливочный сыр и 1–2 креветки. Если сыр несолёный, добавьте перец и щепотку чесночного порошка.','Выпекайте 10 минут при 200 °C и украсьте листиками петрушки.']},
+
+{id:'z4',cat:'zakuski',s:'Салат с курицей',title:'Салат с курицей, яйцами и кукурузой',art:'salad',time:'1 час (15 минут работы)',serv:'4 порции',
+ src:{n:'lifehacker.ru',u:'https://lifehacker.ru/recipe/salat-s-varyonoj-kuricej-yajcami-i-kukuruzoj/'},
+ ings:[I('Филе куриной грудки','2 шт.','кури','курица'),I('Куриные яйца','4–5 шт.','яйц|яиц','яйца'),I('Кукуруза','200 г','кукуруз','кукуруза'),I('Зелень','по вкусу','зелень|укроп|петруш','зелень'),I('Майонез','по вкусу','майонез','майонез'),SALT],
+ note:'В рецепте консервированная кукуруза. Маринованная тоже подойдёт, только солите осторожнее.',
+ steps:['Отварите филе около 25 минут, яйца 10 минут вкрутую и остудите.','Нарежьте курицу и яйца небольшими кусочками, измельчите зелень.','Смешайте всё с кукурузой, посолите, поперчите и заправьте майонезом.']},
+
+{id:'z5',cat:'zakuski',s:'Оливье',title:'Оливье с курицей',art:'salad',time:'1 час (20 минут работы)',serv:'8–10 порций',
+ src:{n:'vkusvill.ru',u:'https://vkusvill.ru/media/recipes/salat-olive-s-kuritsey.html'},
+ ings:[I('Куриная грудка','3 шт.','кури','курица'),I('Картофель','3 шт.','картоф','картофель'),I('Куриные яйца','4 шт.','яйц|яиц','яйца'),I('Морковь','2 шт.','морков','морковь'),I('Зелёный горошек','250 г','горош','зелёный горошек'),I('Солёные огурцы','4 шт.','огур','солёные огурцы'),I('Майонез','200 г','майонез','майонез'),I('Укроп','3 веточки','зелень|укроп','зелень'),I('Подсолнечное масло','1 ст. л.',0,'масло',1),SALT],
+ steps:['Курицу посолите, поперчите и слегка смажьте маслом. Заверните курицу и овощи в фольгу и запекайте при 180 °C, проверяя готовность примерно через 30 минут.','Сварите яйца вкрутую, остудите и очистите.','Остывшие картофель, морковь, яйца, огурцы и курицу нарежьте кубиками размером с горошину.','Смешайте всё с горошком и заправьте майонезом. Можно взять майонез и жирную сметану поровну.','Перед подачей украсьте веточками укропа.']},
+
+{id:'p1',cat:'pervoe',s:'Рыбный суп',title:'Рыбный суп с креветками и сливками',art:'soup',time:'40 минут',serv:'4 порции',
+ src:{n:'lifehacker.ru',u:'https://lifehacker.ru/recipe/rybnyj-sup-s-krevetkami-i-slivkami/'},
+ ings:[I('Рыбное филе','700 г','рыб|форел','рыба'),I('Очищенные креветки','200–250 г','кревет','креветки'),I('Картофель','3–4 шт.','картоф','картофель'),I('Шампиньоны','200–250 г','гриб|шампин','грибы'),I('Репчатый лук','2 шт.','лук','лук'),I('Морковь','1 шт.','морков','морковь'),I('Лимонный сок','4 ст. л.','лимон','лимон'),I('Сметана','3 ст. л.','сметан','сметана'),I('Сливки 33%','3–4 ст. л.','сливк','сливки'),I('Зелень','по вкусу','зелень|укроп|петруш','зелень'),I('Лавровый лист, тимьян, перец горошком, соль','по вкусу',0,'специи',1),I('Вода','1,5–1,8 л',0,'вода',1)],
+ steps:['Нарежьте картофель и грибы кусочками, лук мелко, морковь натрите.','Сложите овощи в кастрюлю, добавьте соль, перец, лавровый лист и тимьян, залейте водой и варите 10 минут после закипания.','Порежьте рыбу порциями, посолите, поперчите, сбрызните тремя ложками лимонного сока и оставьте вместе с креветками на 10 минут.','Добавьте рыбу и креветки в суп и варите под крышкой ещё 10 минут.','Смешайте сметану со сливками и оставшимся соком, влейте в суп вместе с рубленой зеленью. Через минуту-полторы выключите огонь.']},
+
+{id:'p2',cat:'pervoe',s:'Грибной крем-суп',title:'Крем-суп из трёх видов грибов',art:'soup',time:'45 минут',serv:'4 порции',
+ src:{n:'lifehacker.ru',u:'https://lifehacker.ru/recipe/krem-sup-iz-tryox-vidov-gribov/'},
+ ings:[I('Грибы: белые 250 г, шампиньоны 200 г, вёшенки 150 г','600 г','гриб|шампин|вешен','грибы'),I('Лук-порей','3 шт.','порей','лук-порей'),I('Чеснок','2 зубчика','чеснок','чеснок'),I('Белое сухое вино','50 мл','вино','вино'),I('Куриный бульон','1 л','бульон|кури','бульон'),I('Сливки 20%','200 мл','сливк','сливки'),I('Сливочное масло','2 ст. л.','сливочное масло','сливочное масло'),I('Петрушка','1 пучок','зелень|петруш','зелень'),I('Оливковое масло','1 ст. л.',0,'масло',1),I('Сухой тимьян, соль, чёрный перец','по вкусу',0,'специи',1)],
+ steps:['Помойте и нарежьте грибы. Часть белых отложите для обжарки и подачи.','Нарезанную кольцами светлую часть порея обжарьте 3 минуты на оливковом масле с ложкой сливочного.','Добавьте чеснок и жарьте ещё 3 минуты, затем влейте вино и выпаривайте около 2 минут.','Переложите всё в кастрюлю, добавьте бульон и остальные грибы, посолите, поперчите и варите около 12 минут.','Отдельно обжарьте отложенные белые грибы на сливочном масле с тимьяном.','Суп измельчите блендером, влейте сливки и подавайте с обжаренными грибами и рубленой петрушкой.']},
+
+{id:'v1',cat:'vtoroe',s:'Конина',title:'Запечённая конина рулетом',art:'roast',time:'≈ 5,5 часа (2 часа маринад, 3 часа в духовке)',serv:'4 порции',
+ src:{n:'nur.kz',u:'https://www.nur.kz/food/recipes/2053581-zapechennaya-konina-originalnyj-recept-ot-adel/'},
+ ings:[I('Конина','1,5 кг','конин','конина'),I('Газированная минеральная вода','1 л','газиров|минерал','газировка'),I('Чеснок','1 головка','чеснок','чеснок'),I('Укроп','по вкусу','зелень|укроп','зелень'),I('Соль, чёрный молотый перец','по вкусу',0,'соль и перец',1)],
+ note:'На странице источника указано 20 минут готовки, но в шаге запекания стоят 3 часа. Ориентируйтесь на шаги.',
+ steps:['Очистите мясо от плёнок и жира, промойте, залейте газированной водой и оставьте мариноваться под крышкой около двух часов.','Половину чеснока измельчите, остальные зубчики оставьте целыми. Укроп вымойте, обсушите и мелко порубите.','Достаньте мясо, натрите солью и перцем, сделайте надрезы, вставьте целые зубчики чеснока и посыпьте укропом.','Сверните мясо рулетом, перевяжите кулинарной нитью и плотно заверните в фольгу.','Запекайте в форме при 180 °C около 3 часов. Перед подачей снимите фольгу, посыпьте свежим укропом и рубленым чесноком.']},
+
+{id:'v2',cat:'vtoroe',s:'Форель в духовке',title:'Форель, запечённая с зеленью и лимоном',art:'fish',time:'≈ 55 минут',serv:'6 порций',
+ src:{n:'nur.kz',u:'https://www.nur.kz/food/recipes/1804348-forel-v-duhovke-v-folge/'},
+ ings:[I('Форель','1 тушка','форел','форель'),I('Лимон','1 шт.','лимон','лимон'),I('Сельдерей','1 шт.','сельдер','сельдерей'),I('Зелень: укроп, петрушка, тимьян, розмарин','по вкусу','зелень|укроп|петруш|тимьян|розмарин','зелень'),I('Оливковое масло','по вкусу',0,'масло',1),I('Кориандр и душистый перец по 10 горошин, бадьян 5 шт., лавровый лист 2 шт.','',0,'специи',1),SALT],
+ steps:['Очистите рыбу от чешуи, удалите жабры и внутренности, промойте и срежьте хвостовой плавник.','Сделайте неглубокие надрезы с обеих сторон тушки через 1,5–2 см.','На противень с пергаментом выложите зелень и внутренние листья сельдерея, раскидайте кориандр, душистый перец и лавровый лист, сбрызните маслом.','Натрите рыбу маслом, посолите снаружи и внутри, поперчите.','Нарежьте лимон ломтиками. Часть положите внутрь рыбы, остальные разложите на зелени.','Уложите рыбу на зелень, добавьте бадьян, накройте фольгой так, чтобы она не касалась рыбы, и запекайте при 190 °C около 40 минут.','Пока рыба горячая, снимите кожу, отделите филе от костей и подавайте с лимоном и зеленью.']},
+
+{id:'v3',cat:'vtoroe',s:'Голени',title:'Куриные голени, фаршированные грибами',art:'drumstick',time:'50 минут',serv:'5 порций',
+ src:{n:'lifehacker.ru',u:'https://lifehacker.ru/recipe/kurinye-goleni-farshirovannye-gribami/'},
+ ings:[I('Куриные голени','10 шт.','кури','курица'),I('Шампиньоны','200 г','гриб|шампин','грибы'),I('Репчатый лук','1 шт.','лук','лук'),I('Твёрдый сыр','100 г','сыр','сыр'),I('Майонез','2 ст. л.','майонез','майонез'),I('Растительное масло','2 ст. л.',0,'масло',1),I('Паприка, сушёный чеснок, соль, перец','по вкусу',0,'специи',1)],
+ steps:['Разогрейте духовку до 190 °C и смажьте противень маслом.','Аккуратно отделите кожу от голеней, переверните и подтяните к концу кости. Отрежьте сустав вместе с кожей, не повредив её.','Срежьте мясо с кости и нарежьте кубиками.','Лук и грибы мелко нарубите, сыр натрите. Обжарьте лук 2–3 минуты, добавьте грибы и готовьте ещё 3–4 минуты.','Смешайте мясо, сыр, лук с грибами и специи.','Плотно набейте начинкой кожу и закрепите края зубочистками.','Выложите голени на противень, посолите, поперчите, смажьте майонезом и запекайте 25–30 минут.']},
+
+{id:'v4',cat:'vtoroe',s:'Картошка с чесноком',title:'Картошка, запечённая с чесноком',art:'potato',time:'≈ 1 час (10 минут работы)',serv:'8 порций',
+ src:{n:'lifehacker.ru',u:'https://lifehacker.ru/recipe/kartoshka-zapechyonnaya-v-duxovke-s-chesnokom/'},
+ ings:[I('Мелкая картошка','1,3 кг','картоф','картофель'),I('Чеснок','6 зубчиков','чеснок','чеснок'),I('Зелень','¼–½ пучка','зелень|укроп|петруш','зелень'),I('Оливковое масло','60 мл',0,'масло',1),I('Соль 1½ ч. л., чёрный перец 1 ч. л.','',0,'соль и перец',1)],
+ steps:['Разогрейте духовку до 200 °C.','Тщательно вымойте картошку и разрежьте каждую на половинки или четвертинки.','Смешайте её с маслом, солью, перцем и измельчённым чесноком.','Выложите на противень в один слой и запекайте 45–60 минут до мягкости и румяной корочки, дважды перевернув.','Перемешайте с рубленой зеленью и при необходимости досолите.']},
+
+{id:'d1',cat:'desert',s:'Десерт из мандаринов',title:'Десерт из мандаринов с белым шоколадом',art:'glass',time:'1 час (10 минут работы)',serv:'2 порции',
+ src:{n:'lifehacker.ru',u:'https://lifehacker.ru/recipe/nezhnyj-desert-iz-mandarinov/'},
+ ings:[I('Мандарины','5–6 шт.','мандарин|фрукт|цитрус|апельсин','мандарины'),I('Белый шоколад','150 г','белый шоколад','белый шоколад'),I('Жирные сливки','120 мл','сливк','сливки'),I('Натуральный йогурт','200 мл','йогурт','йогурт')],
+ steps:['Раскрошите шоколад, залейте сливками и растопите на водяной бане, помешивая.','Снимите с огня, размешайте до полного растворения, остудите до комнатной температуры и смешайте с йогуртом.','Очистите мандарины и разделите на дольки.','В креманки слоями выложите дольки и крем, украсьте оставшимися дольками.','Уберите в холодильник на 30–60 минут.']},
+
+{id:'d2',cat:'desert',s:'Фруктовый салат',title:'Фруктовый салат с йогуртом',art:'fruit',time:'≈ 20 минут',serv:'4 порции',
+ src:{n:'nur.kz',u:'https://www.nur.kz/food/recipes/1710808-fruktovyj-salat-s-jogurtom-recept-prostoj/'},
+ ings:[I('Яблоко','300 г','яблок|фрукт','яблоко'),I('Банан','250 г','банан|фрукт','банан'),I('Клубника','150 г','клубник|фрукт','клубника'),I('Киви','75 г','киви|фрукт','киви'),I('Натуральный йогурт','50 мл','йогурт','йогурт'),I('Горький шоколад 75%','25 г','горький шоколад','горький шоколад')],
+ note:'Подойдут любые фрукты из вашего запаса. В источнике клубнику советуют заменять апельсином, а граммовки в списке и в тексте расходятся, поэтому ориентируйтесь на вкус.',
+ steps:['Вымойте и обсушите фрукты, очистите банан и киви.','Нарежьте банан, киви и яблоко без сердцевины кусочками, клубнику разрежьте пополам.','Добавьте йогурт. В источнике советуют греческий без добавок. Если он кислый, подсластите ложкой сахарной пудры.','Аккуратно перемешайте, разложите по креманкам и посыпьте тёртым шоколадом.']}
+];
+
+/* ---------- Хранилище (необязательное) ---------- */
+function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+/* ---------- Помощники ---------- */
+function norm(s){return String(s).toLowerCase().replace(/ё/g,'е').replace(/\s+/g,' ').trim();}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+function el(tag,props,kids){
+  var e=document.createElement(tag);
+  if(props){for(var k in props){if(k==='text')e.textContent=props[k];else if(k==='class')e.className=props[k];else e.setAttribute(k,props[k]);}}
+  (kids||[]).forEach(function(c){if(c)e.appendChild(c);});
+  return e;
+}
+function $(id){return document.getElementById(id);}
+function plural(n,a,b,c){var m=n%10,h=n%100;if(m===1&&h!==11)return a;if(m>=2&&m<=4&&(h<10||h>=20))return b;return c;}
+
+/* ---------- Состояние ---------- */
+var products=load(PK,null);
+if(!Array.isArray(products)||products.some(function(x){return typeof x!=='string';}))products=DEFAULTS.slice();
+var picked=load(MK,[]);
+if(!Array.isArray(picked))picked=[];
+picked=picked.filter(function(id){return RECIPES.some(function(r){return r.id===id;});});
+var filter='all';
+
+function isHave(g,pn){
+  if(g.s)return true;
+  return pn.some(function(p){return g.m.some(function(s){return p.indexOf(s)>-1||(p.length>=4&&s.indexOf(p)>-1);});});
+}
+function evaluate(r,pn){
+  var states=[],miss=[],have=0,tot=0;
+  r.ings.forEach(function(g){
+    if(g.s){states.push('staple');return;}
+    tot++;
+    if(isHave(g,pn)){have++;states.push('have');}else{miss.push(g);states.push('miss');}
+  });
+  return {states:states,miss:miss,have:have,tot:tot};
+}
+
+/* ---------- Построение страницы ---------- */
+var cards={};
+var sectionsEl=$('sections');
+var secRefs={};
+SECTIONS.forEach(function(sec){
+  var grid=el('div',{class:'grid'});
+  var count=el('span',{class:'count'});
+  var empty=el('p',{class:'empty',text:'Под этот фильтр блюд нет. Добавьте продукты или выберите «Все блюда».'});
+  empty.hidden=true;
+  var section=el('section',{class:'sec',id:sec.id,'aria-labelledby':'h-'+sec.id},[
+    el('header',{class:'sec-head'},[el('h2',{id:'h-'+sec.id,text:sec.t}),el('p',{class:'sec-sub',text:sec.s}),count]),
+    grid,empty
+  ]);
+  sectionsEl.appendChild(section);
+  secRefs[sec.id]={grid:grid,count:count,empty:empty};
+});
+
+RECIPES.forEach(function(r){
+  var badge=el('span',{class:'badge'});
+  var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox','0 0 120 90');svg.setAttribute('aria-hidden','true');
+  var use=document.createElementNS('http://www.w3.org/2000/svg','use');
+  use.setAttribute('href','#i-'+r.art);svg.appendChild(use);
+  var art=el('div',{class:'art'},[svg,badge]);
+
+  var needEl=el('p',{class:'need'});
+  var ingEls=r.ings.map(function(g){
+    var sr=el('span',{class:'sr'});
+    var li=el('li',null,[el('span',{class:'mark','aria-hidden':'true'}),el('span',{class:'nm',text:g.n}),g.a?el('span',{class:'am',text:g.a}):null,sr]);
+    return {li:li,sr:sr};
+  });
+  var ul=el('ul',{class:'ings'},ingEls.map(function(x){return x.li;}));
+  var how=el('details',{class:'how'},[
+    el('summary',{text:'Как готовить'}),
+    el('ol',null,r.steps.map(function(t){return el('li',{text:t});})),
+    el('a',{class:'src',href:r.src.u,target:'_blank',rel:'noopener noreferrer',text:'Оригинал и фото: '+r.src.n})
+  ]);
+  var pick=el('button',{type:'button',class:'pick','aria-pressed':'false'});
+  var card=el('article',{class:'card','data-id':r.id},[
+    art,
+    el('div',{class:'body'},[
+      el('h3',{text:r.title}),
+      el('p',{class:'meta',text:r.time+' · '+r.serv}),
+      needEl,ul,
+      r.note?el('p',{class:'note',text:r.note}):null,
+      how
+    ]),
+    el('div',{class:'foot'},[pick])
+  ]);
+  pick.addEventListener('click',function(){
+    var i=picked.indexOf(r.id);
+    if(i>-1)picked.splice(i,1);else picked.push(r.id);
+    save(MK,picked);update();
+  });
+  secRefs[r.cat].grid.appendChild(card);
+  cards[r.id]={el:card,badge:badge,need:needEl,ings:ingEls,pick:pick};
+});
+
+/* ---------- Обновление ---------- */
+var chipsEl=$('chips'),suggestEl=$('suggest'),suggestBox=$('suggestBox');
+
+function renderChips(){
+  chipsEl.textContent='';
+  products.forEach(function(p,i){
+    var b=el('button',{type:'button','aria-label':'Убрать: '+p,text:'×'});
+    b.addEventListener('click',function(){products.splice(i,1);save(PK,products);update();chipsEl.focus();});
+    chipsEl.appendChild(el('li',{class:'chip'},[el('span',{text:cap(p)}),b]));
+  });
+  var n=products.length;
+  $('prodCount').textContent=n?('В списке: '+n+' '+plural(n,'продукт','продукта','продуктов')):'Список пуст';
+}
+
+function renderSuggest(ev){
+  var counts={};
+  RECIPES.forEach(function(r){ev[r.id].miss.forEach(function(g){counts[g.k]=(counts[g.k]||0)+1;});});
+  var keys=Object.keys(counts).sort(function(a,b){return counts[b]-counts[a]||a.localeCompare(b,'ru');}).slice(0,18);
+  suggestEl.textContent='';
+  keys.forEach(function(k){
+    var b=el('button',{type:'button',class:'addchip','data-add':k},[el('span',{text:'+ '+k}),el('small',{text:counts[k]+' '+plural(counts[k],'блюдо','блюда','блюд')})]);
+    b.addEventListener('click',function(){addProducts(k);});
+    suggestEl.appendChild(el('li',null,[b]));
+  });
+  suggestBox.hidden=keys.length===0;
+}
+
+function renderMenu(ev){
+  $('menuCount').textContent=picked.length;
+  var list=$('menuList');list.textContent='';
+  if(!picked.length){
+    list.appendChild(el('p',{class:'hint',text:'Нажмите «Добавить в меню» на карточках. Здесь соберутся выбранные блюда, а рядом появится список покупок.'}));
+  }else{
+    SECTIONS.forEach(function(sec){
+      var rs=RECIPES.filter(function(r){return r.cat===sec.id&&picked.indexOf(r.id)>-1;});
+      if(!rs.length)return;
+      list.appendChild(el('h4',{text:sec.t}));
+      list.appendChild(el('ul',null,rs.map(function(r){
+        var x=el('button',{type:'button',class:'x','aria-label':'Убрать из меню: '+r.title,text:'Убрать'});
+        x.addEventListener('click',function(){picked.splice(picked.indexOf(r.id),1);save(MK,picked);update();});
+        return el('li',null,[el('span',{class:'t',text:r.title}),x]);
+      })));
+    });
+  }
+
+  var shop=$('shopList');shop.textContent='';
+  var agg={},order=[],staples={};
+  picked.forEach(function(id){
+    var r=RECIPES.filter(function(x){return x.id===id;})[0];
+    r.ings.forEach(function(g){if(g.s)staples[g.k]=1;});
+    ev[id].miss.forEach(function(g){
+      if(!agg[g.k]){agg[g.k]=[];order.push(g.k);}
+      agg[g.k].push({a:g.a,r:r.s});
+    });
+  });
+  if(!picked.length){
+    shop.appendChild(el('p',{class:'hint',text:'Список появится, когда вы выберете блюда.'}));
+  }else if(!order.length){
+    shop.appendChild(el('p',{class:'hint',text:'Всё нужное для выбранных блюд уже есть дома.'}));
+  }else{
+    shop.appendChild(el('ul',null,order.map(function(k){
+      var parts=agg[k].map(function(p){return (p.a?p.a+' ':'')+'('+p.r+')';}).join(' · ');
+      return el('li',null,[el('span',{class:'t',text:cap(k)}),el('span',{class:'a',text:parts})]);
+    })));
+  }
+  var sk=Object.keys(staples);
+  if(sk.length){shop.appendChild(el('p',{class:'hint',text:'Проверьте запасы: '+sk.join(', ')+'.'}));}
+  $('copyShop').disabled=!order.length;
+  $('copyShop')._text=order.length?('Покупки к новогоднему столу:\n'+order.map(function(k){
+    return '— '+cap(k)+': '+agg[k].map(function(p){return (p.a?p.a+' ':'')+'('+p.r+')';}).join(', ');
+  }).join('\n')):'';
+}
+
+function update(){
+  var pn=products.map(norm);
+  var ev={};
+  RECIPES.forEach(function(r){ev[r.id]=evaluate(r,pn);});
+  SECTIONS.forEach(function(sec){
+    var list=RECIPES.filter(function(r){return r.cat===sec.id;});
+    var sorted=list.slice().sort(function(a,b){return ev[a.id].miss.length-ev[b.id].miss.length||list.indexOf(a)-list.indexOf(b);});
+    var shown=0;
+    sorted.forEach(function(r,idx){
+      var c=cards[r.id],e=ev[r.id],m=e.miss.length;
+      var ok=filter==='all'||(filter==='near'&&m<=2)||(filter==='full'&&m===0);
+      c.el.hidden=!ok;c.el.style.order=idx;if(ok)shown++;
+      c.badge.className='badge '+(m===0?'ok':'no');
+      c.badge.textContent=m===0?'Всё есть':'Не хватает: '+m;
+      c.need.hidden=m===0;
+      if(m)c.need.textContent='Докупить: '+e.miss.map(function(g){return g.k;}).join(', ');
+      e.states.forEach(function(s,i){
+        c.ings[i].li.className=s;
+        c.ings[i].sr.textContent=s==='have'?' — есть':s==='miss'?' — нужно докупить':' — домашний запас';
+      });
+      var on=picked.indexOf(r.id)>-1;
+      c.el.classList.toggle('on',on);
+      c.pick.setAttribute('aria-pressed',on?'true':'false');
+      c.pick.textContent=on?'В моём меню':'Добавить в меню';
+    });
+    var ref=secRefs[sec.id];
+    ref.count.textContent=shown+' '+plural(shown,'блюдо','блюда','блюд');
+    ref.empty.hidden=shown>0;
+    ref.grid.hidden=shown===0;
+  });
+  renderChips();renderSuggest(ev);renderMenu(ev);
+}
+
+/* ---------- Действия ---------- */
+function addProducts(text){
+  String(text).split(/[,;\n]+/).forEach(function(raw){
+    var s=raw.trim().slice(0,40);var n=norm(s);
+    if(!n)return;
+    if(products.some(function(p){return norm(p)===n;}))return;
+    if(products.length>=80)return;
+    products.push(s);
+  });
+  save(PK,products);update();
+}
+$('addForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var inp=$('newProduct');
+  if(inp.value.trim()){addProducts(inp.value);inp.value='';}
+});
+$('resetProducts').addEventListener('click',function(){products=DEFAULTS.slice();save(PK,products);update();});
+document.querySelectorAll('.seg').forEach(function(b){
+  b.addEventListener('click',function(){
+    filter=b.getAttribute('data-f');
+    document.querySelectorAll('.seg').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});
+    update();
+  });
+});
+$('copyShop').addEventListener('click',function(){
+  var btn=$('copyShop'),text=btn._text||'';
+  function done(){btn.textContent='Скопировано';setTimeout(function(){btn.textContent='Скопировать список';},1800);}
+  function fallback(){var fb=$('copyFallback'),ta=$('copyText');fb.hidden=false;ta.value=text;ta.focus();ta.select();}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    try{navigator.clipboard.writeText(text).then(done,fallback);}catch(e){fallback();}
+  }else fallback();
+});
+
+/* ---------- Гирлянда и отсчёт ---------- */
+(function(){
+  var g=$('garland'),cols=['var(--b1)','var(--b2)','var(--b3)','var(--b4)'];
+  for(var i=0;i<40;i++){
+    var cell=el('div',{class:'gcell'});
+    var bulb=el('i');bulb.style.setProperty('--c',cols[i%4]);bulb.style.setProperty('--d',((i*0.37)%2.8).toFixed(2)+'s');
+    cell.appendChild(bulb);g.appendChild(cell);
+  }
+  var now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var c=$('countdown');
+  if(now.getMonth()===0&&now.getDate()===1){c.textContent='С Новым годом!';}
+  else{
+    var ny=new Date(now.getFullYear()+1,0,1);
+    var n=Math.round((ny-today)/86400000);
+    c.textContent='До Нового года '+n+' '+plural(n,'день','дня','дней');
+  }
+})();
+
+/* ---------- Снег ---------- */
+(function(){
+  var cv=$('snow');if(!cv||!cv.getContext)return;
+  var ctx=cv.getContext('2d'),W=0,H=0,flakes=[],col='#fff',tick=0,raf=0;
+  var dpr=Math.min(window.devicePixelRatio||1,2);
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function resize(){
+    W=window.innerWidth;H=window.innerHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    var n=Math.round(Math.min(70,W/16));flakes=[];
+    for(var i=0;i<n;i++)flakes.push({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2.2,v:.3+Math.random()*.7,s:Math.random()*6.28});
+    draw();
+  }
+  function color(){var v=getComputedStyle(document.documentElement).getPropertyValue('--flake').trim();col=v||'#fff';}
+  function draw(){
+    ctx.clearRect(0,0,W,H);ctx.fillStyle=col;ctx.globalAlpha=.8;
+    flakes.forEach(function(f){ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.283);ctx.fill();});
+  }
+  function frame(){
+    if(tick++%90===0)color();
+    flakes.forEach(function(f){f.y+=f.v;f.s+=.01;f.x+=Math.sin(f.s)*.4;if(f.y>H+4){f.y=-4;f.x=Math.random()*W;}});
+    draw();raf=requestAnimationFrame(frame);
+  }
+  color();resize();
+  window.addEventListener('resize',resize);
+  if(!reduce){
+    raf=requestAnimationFrame(frame);
+    document.addEventListener('visibilitychange',function(){
+      if(document.hidden){cancelAnimationFrame(raf);}else{raf=requestAnimationFrame(frame);}
+    });
+  }
+})();
+
+update();
+})();
+</script>
+</body>
+</html>
